@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In · Simple POS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-wrap">
+    <div class="brand">
+      <div class="brand-mark">●</div>
+      <h1>Simple<span class="accent">POS</span></h1>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="login">Log In</button>
+        <button class="tab-btn" data-tab="register">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="login-form" class="auth-form active">
+        <label>Username</label>
+        <input type="text" id="login-username" placeholder="Enter username" required autocomplete="username">
+
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="Enter password" required autocomplete="current-password">
+
+        <button type="submit" class="btn-primary">Log In</button>
+        <p class="msg" id="login-msg"></p>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="register-form" class="auth-form">
+        <label>Username</label>
+        <input type="text" id="register-username" placeholder="Choose a username" required autocomplete="username">
+
+        <label>Password</label>
+        <input type="password" id="register-password" placeholder="Choose a password" required autocomplete="new-password">
+
+        <label>Confirm Password</label>
+        <input type="password" id="register-confirm" placeholder="Re-enter password" required autocomplete="new-password">
+
+        <button type="submit" class="btn-primary">Create Account</button>
+        <p class="msg" id="register-msg"></p>
+      </form>
+    </div>
+
+    <p class="footnote">Minimal point-of-sale demo · black &amp; white, accented</p>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>
