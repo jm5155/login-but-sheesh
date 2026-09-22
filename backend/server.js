@@ -35,6 +35,20 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
+const orderSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  username: { type: String, required: true },
+  items: [{
+    id: Number,
+    name: String,
+    price: Number,
+    qty: Number
+  }],
+  total: { type: Number, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+const Order = mongoose.model('Order', orderSchema);
+
 function requireAuth(req, res, next) {
   if (!req.session.userId) return res.status(401).json({ error: 'Not authenticated' });
   next();
@@ -105,6 +119,36 @@ const PRODUCTS = [
 
 app.get('/api/products', requireAuth, (req, res) => {
   res.json(PRODUCTS);
+});
+
+// ---------- orders ----------
+app.post('/api/orders', requireAuth, async (req, res) => {
+  try {
+    const { items, total } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'Cart is empty' });
+    }
+
+    const order = await Order.create({
+      userId: req.session.userId,
+      username: req.session.username,
+      items,
+      total
+    });
+
+    res.status(201).json({ success: true, order });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get('/api/orders', requireAuth, async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.session.userId }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 mongoose.connect(process.env.MONGODB_URI)
