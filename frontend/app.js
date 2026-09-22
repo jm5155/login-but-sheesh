@@ -184,10 +184,30 @@ if (productGrid) {
     renderCart();
   });
 
-  document.getElementById('checkout-btn').addEventListener('click', () => {
-    alert(`Order complete! Total: ₱${cart.reduce((s, i) => s + i.price * i.qty, 0).toFixed(2)}`);
-    cart = [];
-    renderCart();
+  document.getElementById('checkout-btn').addEventListener('click', async () => {
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const items = cart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty }));
+
+    try {
+      const res = await fetch(`${API_BASE}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ items, total })
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Order failed to save.');
+        return;
+      }
+
+      alert(`Order complete! Total: ₱${total.toFixed(2)}`);
+      cart = [];
+      renderCart();
+    } catch (err) {
+      alert('Unable to reach the server. Order not saved.');
+    }
   });
 
   document.getElementById('logout-btn').addEventListener('click', async () => {
